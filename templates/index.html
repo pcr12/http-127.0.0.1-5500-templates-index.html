@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ӘҚК Әскери институты — локальный чат</title>
+  <style>
+    :root {
+      --navy-950: #071330;
+      --navy-900: #0a1a40;
+      --navy-800: #0f2556;
+      --navy-700: #16326e;
+      --sky-300: #a9c2f2;
+      --sky-200: #c8d7f5;
+      --gold-400: #f6c431;
+      --danger-400: #ff7a7a;
+      --danger-500: #e5484d;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--navy-950);
+      font-family: "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* ---------- Левая панель с брендингом ---------- */
+    .brand-panel {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      width: 100%;
+      max-width: 480px;
+      padding: 48px 32px 24px;
+      color: var(--sky-200);
+      background:
+        radial-gradient(120% 60% at 50% 0%, var(--navy-700) 0%, transparent 70%),
+        radial-gradient(90% 30% at 50% 100%, rgba(52, 96, 190, .28) 0%, transparent 75%),
+        linear-gradient(180deg, var(--navy-800) 0%, var(--navy-900) 55%, var(--navy-950) 100%);
+    }
+
+    /* Орнамент «қошқар мүйіз»: сетка по центру панели, плавно гаснет к низу */
+    .brand-panel__ornament {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      z-index: -1;
+      width: 1200px;
+      height: 100%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, .7) 30%, rgba(0, 0, 0, .25) 60%, transparent 85%);
+              mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, .7) 30%, rgba(0, 0, 0, .25) 60%, transparent 85%);
+    }
+    .brand-panel__ornament .km {
+      fill: none;
+      stroke: #6f8fd0;
+      stroke-opacity: .2;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .brand-panel__ornament .km .o-fill { fill: #6f8fd0; fill-opacity: .2; stroke: none; }
+
+    .brand-panel__content { position: relative; z-index: 1; }
+
+    .brand-panel__emblem {
+      display: block;
+      width: 112px;
+      height: auto;
+      margin: 0 0 28px;
+      filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .45));
+    }
+
+    .brand-panel__title {
+      margin: 0;
+      color: var(--gold-400);
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: .01em;
+      text-transform: uppercase;
+    }
+
+    .brand-panel__subtitle {
+      margin: 10px 0 0;
+      color: var(--sky-300);
+      font-size: 13px;
+      line-height: 1.55;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    /* Небольшой орнаментальный разделитель */
+    .brand-panel__divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 22px 0;
+      color: var(--gold-400);
+    }
+    .brand-panel__divider::before,
+    .brand-panel__divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(246, 196, 49, .55), transparent);
+    }
+    .brand-panel__divider svg {
+      width: 30px;
+      height: 30px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .brand-panel__divider svg .o-fill { fill: currentColor; stroke: none; }
+
+    .brand-panel__text {
+      margin: 0;
+      color: #d3ddf3;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .brand-panel__warning {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 24px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 122, 122, .45);
+      border-radius: 14px;
+      background: rgba(110, 18, 38, .45);
+      backdrop-filter: blur(2px);
+      color: var(--danger-400);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+    .brand-panel__warning strong { color: #fff; }
+    .brand-panel__warning-icon {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--danger-500);
+      box-shadow: 0 0 0 4px rgba(229, 72, 77, .18);
+    }
+    .brand-panel__warning-icon svg { width: 16px; height: 16px; fill: #fff; }
+
+    /* Беркут: целиком, внизу панели, не перекрывает текст */
+    .brand-panel__eagle {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      margin: 0 auto;
+      opacity: .4;
+      pointer-events: none;
+    }
+    .brand-panel__footer-space { flex: 1 1 auto; min-height: 28px; }
+    .brand-panel__eagle .fe {
+      fill: url(#eagle-fill);
+      stroke: var(--navy-950);
+      stroke-width: 2.5;
+      stroke-linejoin: round;
+    }
+    .brand-panel__eagle .ln {
+      fill: none;
+      stroke: var(--navy-950);
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+    .brand-panel__eagle .eye { fill: var(--navy-950); }
+
+    @media (max-width: 420px) {
+      .brand-panel { padding: 36px 20px 20px; }
+      .brand-panel__title { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="brand-panel">
+    <!-- Фоновый орнамент -->
+    <svg class="brand-panel__ornament" aria-hidden="true" focusable="false">
+      <defs>
+        <g id="km-motif"><path d="M0 46C14 40 45.9 22.7 54.8 -1.7L55 -6.3L54.8 -10.8L54 -15.1L52.8 -19.1L51.2 -22.9L49.1 -26.4L46.7 -29.5L43.9 -32.1L41 -34.4L37.8 -36.2L34.5 -37.6L31.1 -38.4L27.8 -38.9L24.5 -38.9L21.3 -38.5L18.2 -37.7L15.4 -36.5L12.8 -35L10.5 -33.2L8.5 -31.2L6.9 -29.1L5.6 -26.8L4.6 -24.4L4 -21.9L3.7 -19.5L3.7 -17.2L4 -14.9L4.6 -12.8L5.5 -10.9L6.6 -9.1L7.9 -7.6L9.3 -6.3L10.8 -5.2L12.4 -4.4L14 -3.9L15.6 -3.6L17.1 -3.5L18.6 -3.7L20 -4L21.3 -4.6L22.4 -5.2L23.3 -6L24.1 -6.9L24.7 -7.8L25.1 -8.8L25.3 -9.7L25.4 -10.6L25.3 -11.5"/><path d="M0 46C14 40 45.9 22.7 54.8 -1.7L55 -6.3L54.8 -10.8L54 -15.1L52.8 -19.1L51.2 -22.9L49.1 -26.4L46.7 -29.5L43.9 -32.1L41 -34.4L37.8 -36.2L34.5 -37.6L31.1 -38.4L27.8 -38.9L24.5 -38.9L21.3 -38.5L18.2 -37.7L15.4 -36.5L12.8 -35L10.5 -33.2L8.5 -31.2L6.9 -29.1L5.6 -26.8L4.6 -24.4L4 -21.9L3.7 -19.5L3.7 -17.2L4 -14.9L4.6 -12.8L5.5 -10.9L6.6 -9.1L7.9 -7.6L9.3 -6.3L10.8 -5.2L12.4 -4.4L14 -3.9L15.6 -3.6L17.1 -3.5L18.6 -3.7L20 -4L21.3 -4.6L22.4 -5.2L23.3 -6L24.1 -6.9L24.7 -7.8L25.1 -8.8L25.3 -9.7L25.4 -10.6L25.3 -11.5" transform="scale(-1 1)"/><path d="M0 46L0 64M0 8L0 34"/><path class="o-fill" d="M0 -4L7 8L0 20L-7 8Z"/></g>
+        <pattern id="km-pattern" width="120" height="230" patternUnits="userSpaceOnUse">
+          <g class="km">
+            <use href="#km-motif" transform="translate(60 60)"/>
+            <use href="#km-motif" transform="translate(0 175) scale(1 -1)"/>
+            <use href="#km-motif" transform="translate(120 175) scale(1 -1)"/>
+          </g>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#km-pattern)"/>
+    </svg>
+
+    <div class="brand-panel__content">
+      <!-- Подставьте путь к своей эмблеме -->
+      <img class="brand-panel__emblem" src="../static/img/emblem.png" alt="Эмблема института">
+
+      <h1 class="brand-panel__title">ӘҚК Әскери<br>институты</h1>
+      <p class="brand-panel__subtitle">
+        Екі мәрте Кеңес Одағының Батыры<br>
+        Т. Ж. Бегельдинов атындағы
+      </p>
+
+      <div class="brand-panel__divider" aria-hidden="true">
+        <svg viewBox="-60 -54 120 122"><use href="#km-motif"/></svg>
+      </div>
+
+      <p class="brand-panel__text">
+        Локальный чат для служебного общения и обмена файлами внутри сети института.
+      </p>
+
+      <div class="brand-panel__warning" role="note">
+        <span class="brand-panel__warning-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm-3 8V7a3 3 0 1 1 6 0v3H9Z"/></svg>
+        </span>
+        <span>Обработка и отправка секретной информации <strong>строго запрещена</strong></span>
+      </div>
+    </div>
+
+    <div class="brand-panel__footer-space"></div>
+
+    <!-- Беркут с распахнутыми крыльями -->
+    <svg class="brand-panel__eagle" viewBox="-8 26 816 426" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="eagle-fill" gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="450">
+          <stop offset="0" stop-color="#e3ecff"/>
+          <stop offset="1" stop-color="#7f9fe0"/>
+        </linearGradient>
+      </defs>
+      <g id="eagle-wing"><path class="fe" d="M417.2 253.8L411.3 357.5Q410.4 394.1 427.1 406.7Q444.4 394.9 445.3 358.3L444.4 254.5Z"/><path class="ln" d="M430.3 272.5L427.6 385.4"/><path class="fe" d="M437.1 235.6L447.4 342.6Q452.2 380.2 470.6 390.6Q485.9 375.9 481.1 338.3L464.1 232.1Z"/><path class="ln" d="M453 252.7L467.8 368.7"/><path class="fe" d="M457.6 219.5L483.4 326.7Q493.7 364.2 513.5 372.2Q526.5 355.2 516.2 317.7L483.8 212.3Z"/><path class="ln" d="M475.9 234.7L507.5 350.3"/><path class="fe" d="M478.6 205.7L519 309.6Q534.3 345.8 555.1 351.3Q565.6 332.5 550.3 296.3L503.6 195.1Z"/><path class="ln" d="M498.8 218.5L546.1 330.1"/><path class="fe" d="M500 194.1L553.3 291.6Q573.2 325.4 594.5 328Q602.5 308.1 582.7 274.3L523.4 180.3Z"/><path class="ln" d="M521.6 204.1L582.9 308.3"/><path class="fe" d="M521.8 184.8L585.9 273.1Q609.5 303.5 630.8 303.3Q636.4 282.7 612.8 252.3L543.3 168.1Z"/><path class="ln" d="M544.3 191.6L617.1 285.5"/><path class="fe" d="M544 177.6L616.4 255Q642.8 281.4 663.6 278.3Q666.9 257.4 640.5 231L563.3 158.4Z"/><path class="ln" d="M566.8 181.3L648.2 262.8"/><path class="fe" d="M566.6 172.7L644.9 238.2Q673.3 260.4 693.2 254.3Q694.2 233.6 665.8 211.4L583.4 151.3Z"/><path class="ln" d="M589.2 173.1L676.7 241.4"/><path class="fe" d="M563 168.4L666.3 231.5Q696.8 249.1 714.5 242Q711.8 223.1 681.3 205.5L575 147.6Z"/><path class="ln" d="M586.5 168.1L694.1 230.2"/><path class="fe" d="M572.8 166.4L698.7 212.1Q735.7 224.6 752.9 214.5Q745.3 196.2 708.3 183.7L580.5 143.6Z"/><path class="ln" d="M597.8 162.1L728.2 206.2"/><path class="fe" d="M582.8 163.9L725.2 185.3Q766.9 190.6 782.7 177.5Q770.7 160.9 729.1 155.5L585.9 140.1Z"/><path class="ln" d="M608.1 155.1L754.9 174"/><path class="fe" d="M592.8 161L742.4 153.5Q786 150.5 799.5 134.5Q783.9 120.5 740.3 123.6L591.2 137Z"/><path class="ln" d="M616.9 147.3L770.4 136.5"/><path class="fe" d="M602.8 157.6L746.7 121.2Q788.4 109.8 798.3 91.5Q780.5 80.9 738.7 92.3L596.5 134.4Z"/><path class="ln" d="M623.5 139.5L770.5 99.2"/><path class="fe" d="M612.7 153.7L738.9 93.7Q775.3 75.4 780.7 55.9Q761.8 48.6 725.4 66.9L601.9 132.3Z"/><path class="ln" d="M628.1 132.6L756.4 68.1"/><path class="fe" d="M622.4 149.5L721.8 75.6Q750.3 53.3 750.5 34.1Q731.8 29.7 703.4 51.9L607.6 130.5Z"/><path class="ln" d="M631.3 127.3L731.6 48.9"/><path class="fe" d="M392 258Q412 222 428.1 229.1L434.2 222.5L440.4 216L446.5 209.8L452.7 203.9L458.9 198.1L465.2 192.6L471.4 187.3L477.7 182.3L484 177.5L490.4 172.9L496.8 168.5L503.1 164.4L509.5 160.5L516 156.8L522.4 153.3L528.9 150.1L535.4 147.1L542 144.4L548.5 141.8L555.1 139.5L561.7 137.5L568.3 135.6L575 134L611 126L625 138L609 179.2L575 206Q571.3 231.2 552.3 212.5Q548.8 239.1 529.9 221.7Q526.5 249.6 507.7 233.6Q504.5 262.8 485.9 248.1Q482.8 278.8 464.3 265.4Q461.3 297.4 443 285.3Q440.2 318.7 422 308L392 308Z"/><path class="fe" d="M392 258Q412 222 428.1 229.1L434.2 222.5L440.4 216L446.5 209.8L452.7 203.9L458.9 198.1L465.2 192.6L471.4 187.3L477.7 182.3L484 177.5L490.4 172.9L496.8 168.5L503.1 164.4L509.5 160.5L516 156.8L522.4 153.3L528.9 150.1L535.4 147.1L542 144.4L548.5 141.8L555.1 139.5L561.7 137.5L568.3 135.6L575 134L611 126L625 138L609 159.6L575 178Q571.1 194.4 557.3 182.8Q553.4 200 539.8 189.3Q536 207.3 522.4 197.3Q518.8 216.2 505.3 207Q501.7 226.7 488.3 218.4Q484.8 238.9 471.4 231.3Q468 252.6 454.8 245.9Q451.4 268 438.3 262.1Q435.1 285.1 422 280L392 280Z"/></g>
+      <use href="#eagle-wing" transform="translate(800 0) scale(-1 1)"/>
+      <path class="fe" d="M364.8 322.3L414.3 392.6Q428.2 410.4 449.4 403.4Q461.3 384.5 447.4 366.7L391.2 301.7Z"/><path class="ln" d="M386.6 323L439.4 390.6"/><path class="fe" d="M408.8 301.7L352.6 366.7Q338.7 384.5 350.6 403.4Q371.8 410.4 385.7 392.6L435.2 322.3Z"/><path class="ln" d="M413.4 323L360.6 390.6"/><path class="fe" d="M370.1 319.2L405.6 403.9Q416 425.8 438.4 424.1Q453.9 407.8 443.6 386L400.5 304.8Z"/><path class="ln" d="M391.7 325.4L431 408.4"/><path class="fe" d="M399.5 304.8L356.4 386Q346.1 407.8 361.6 424.1Q384 425.8 394.4 403.9L429.9 319.2Z"/><path class="ln" d="M408.3 325.4L369 408.4"/><path class="fe" d="M376.3 315.7L393.2 410.4Q398.8 435.1 421.1 438.7Q439.8 425.9 434.2 401.2L409.1 308.3Z"/><path class="ln" d="M396.1 327.2L417.2 421"/><path class="fe" d="M390.9 308.3L365.8 401.2Q360.2 425.9 378.9 438.7Q401.2 435.1 406.8 410.4L423.7 315.7Z"/><path class="ln" d="M403.9 327.2L382.8 421"/><path class="fe" d="M383.2 312L379 409.7Q379 435.4 400 444Q421 435.4 421 409.7L416.8 312Z"/><path class="ln" d="M400 327.8L400 425.5"/>
+      <path class="fe" d="M380 196C350 214 344 262 356 300C366 330 384 342 400 344C416 342 434 330 444 300C456 262 450 214 422 196Z"/><path class="ln" d="M369 236Q378 250 387 236"/><path class="ln" d="M391 236Q400 250 409 236"/><path class="ln" d="M413 236Q422 250 431 236"/><path class="ln" d="M362 258Q370 272 378 258"/><path class="ln" d="M382 258Q390 272 398 258"/><path class="ln" d="M402 258Q410 272 418 258"/><path class="ln" d="M422 258Q430 272 438 258"/><path class="ln" d="M369 280Q378 294 387 280"/><path class="ln" d="M391 280Q400 294 409 280"/><path class="ln" d="M413 280Q422 294 431 280"/><path class="ln" d="M366 302Q373 316 380 302"/><path class="ln" d="M384 302Q391 316 398 302"/><path class="ln" d="M402 302Q409 316 416 302"/><path class="ln" d="M420 302Q427 316 434 302"/>
+      <path class="fe" d="M375.6 358L382 370Q385 379 381 374L383.6 358ZM369 358L370 374Q373 383 369 378L377 358ZM362.9 358L359 369Q362 378 358 373L370.9 358ZM416.4 358L412 370Q415 379 419 374L424.4 358ZM423 358L424 374Q427 383 431 378L431 358ZM429.1 358L435 369Q438 378 442 373L437.1 358Z"/>
+      <path class="fe" d="M385 300C363 296 356 330 362 354Q366 362 371 356Q376 364 380 355C389 336 391 312 385 300Z"/><path class="fe" d="M415 300C437 296 444 330 438 354Q434 362 429 356Q424 364 420 355C411 336 409 312 415 300Z"/>
+      <path class="fe" d="M428 212C430 186 428 150 404 140C388 134 368 140 358 152C348 154 338 160 336 172C335 180 340 186 345 186C343 180 345 176 351 176C358 178 364 178 370 182C372 194 372 204 368 214Q376 222 382 214Q390 226 398 216Q406 226 414 214Q422 222 428 212Z"/>
+      <path class="ln" d="M351 176C356 170 362 168 372 170"/><path class="ln" d="M372 156Q384 150 394 156"/><path class="ln" d="M420 186Q412 196 416 210"/><path class="ln" d="M408 192Q400 204 406 216"/>
+      <circle class="eye" cx="383" cy="161" r="4"/>
+    </svg>
+  </aside>
+</body>
+</html>
